@@ -1,0 +1,31 @@
+# Architecture: Inverse Tree of Life
+
+We flipped the pipeline. Normal compute: `bits → CPU → packets → deploy`.
+Chromatic compute: `photons → SLM → interference → emit`.
+
+## Mapping
+
+| Sephirah | Stage | Physics | Code |
+| --- | --- | --- | --- |
+| 1 Kether | Absorb | Photodiode array | `kether_absorb()` |
+| 2 Chokhmah | Diffract | Grating → 5 bands | `chokhmah_diffract()` |
+| 3 Binah | Filter | Dichroic policy | `binah_filter()` |
+| 6 Tiphareth | Interfere | SLM hologram | `tiphareth_interfere()` |
+| 9 Yesod | Guide | λ→angle routing | `yesod_guide()` |
+| 10 Malkuth | Emit | Laser diodes | `malkuth_emit()` |
+
+## Data Model
+
+Packet = `Spectrum(bands, phase)`
+`bands`: np.array([UV,B,G,R,IR]) power in mW
+`phase`: np.array(64,64) SLM phase map
+
+Routing: `np.argmax(bands)` + `mean(phase[quadrant])` → neighbor
+
+## Consensus
+
+No blockchain. Phase-locking between SLMs. If your laser is incoherent, neighbors drop you. Gevurah = bandpass filter rejecting unauthorized spectrum.
+
+## Path of Return
+
+Backscatter sensors read reflected power. Gradient descent on `slm_state` minimizes loss. This is TCP ACK but with light.
